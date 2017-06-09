@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.http import Http404
 
 from rest_framework import status
+from rest_framework.renderers import StaticHTMLRenderer
+from rest_framework import generics
 
 from .models import Quote
 from .serializers import QuoteSerializer
@@ -23,56 +25,74 @@ def api_root(request, format=None):
 		})
 	# add the reverse link to all other views.
 
-from rest_framework.views import APIView
 
-class QuoteList(APIView):
-	'''
-	List all the quotes or create a new one!
-	'''
+#=============================== GENERIC CLASS-BASED VIEWS =============================================
 
-	def get(self, request, format=None):
+class QuoteList(generics.ListCreateAPIView):
 
-		quotes = Quote.objects.all()
-		serializer = QuoteSerializer(quotes, many=True)
-		return Response(serializer.data)
+	queryset = Quote.objects.all()
+	serializer_class = QuoteSerializer
 
-	def post(self, request, format=None):
+class QuoteDetail(generics.RetrieveUpdateDestroyAPIView):
 
-		serializer = QuoteSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	queryset = Quote.objects.all()
+	serializer_class = QuoteSerializer
 
-class QuoteDetail(APIView):
-	'''
-	Retreive, update or delete quotes.
-	'''
 
-	def get_object(self, pk):
+#============================================ CLASS BASED VIEWS ================================
+
+# from rest_framework.views import APIView
+
+# class QuoteList(APIView):
+# 	'''
+# 	List all the quotes or create a new one!
+# 	'''
+# 	renderer_classed = [StaticHTMLRenderer,]
+# 	def get(self, request, format=None):
+
+# 		quotes = Quote.objects.all()
+# 		serializer = QuoteSerializer(quotes, many=True)
+# 		return Response(serializer.data)
+
+# 	def post(self, request, format=None):
+
+# 		serializer = QuoteSerializer(data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class QuoteDetail(APIView):
+# 	'''
+# 	Retreive, update or delete quotes.
+# 	'''
+# 	renderer_classed = [StaticHTMLRenderer,]
+
+# 	def get_object(self, pk):
 		
-		try:
-			return Quote.objects.get(pk=pk)
-		except Quote.DoeNotExist:
-			raise Http404
+# 		try:
+# 			return Quote.objects.get(pk=pk)
+# 		except Quote.DoeNotExist:
+# 			raise Http404
 
-	def get(self, request, pk, format=None):
+# 	def get(self, request, pk, format=None):
 
-		quote = self.get_object(pk)
-		serializer = QuoteSerializer(quote)
-		return Response(serializer.data, status=status.HTTP_200_OK)
+# 		quote = self.get_object(pk)
+# 		serializer = QuoteSerializer(quote)
+# 		return Response(serializer.data, status=status.HTTP_200_OK)
 
-	def put(self, request, pk, format=None):
+# 	def put(self, request, pk, format=None):
 
-		quote = self.get_object(pk)
-		serializer = QuoteSerializer(quote, data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# 		quote = self.get_object(pk)
+# 		serializer = QuoteSerializer(quote, data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-	def delete(self, request, pk, format=None):
+# 	def delete(self, request, pk, format=None):
 
-		quote = self.get_object(pk)
-		quote.delete()
-		return Response(status=status.HTTP_204_NO_CONTENT)
+# 		quote = self.get_object(pk)
+# 		quote.delete()
+# 		return Response(status=status.HTTP_204_NO_CONTENT)
+
