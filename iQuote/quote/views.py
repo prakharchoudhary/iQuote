@@ -8,9 +8,11 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework import generics
+from rest_framework import permissions
 
 from .models import Quote
-from .serializers import QuoteSerializer
+from .serializers import QuoteSerializer, UserSerializer
+from .permissions import IsOwnerOrReadOnly
 
 #========== ROOT API endpoint ==================
 
@@ -21,9 +23,9 @@ from rest_framework.reverse import reverse
 @api_view(['GET'])
 def api_root(request, format=None):
 	return Response({
-		'quotes': reverse('quote-list', request=request, format=format) 
+		'quotes': reverse('quote-list', request=request, format=format),
+		'users': reverse('user-list', request=request, format=format),
 		})
-	# add the reverse link to all other views.
 
 
 #=============================== GENERIC CLASS-BASED VIEWS =============================================
@@ -32,12 +34,28 @@ class QuoteList(generics.ListCreateAPIView):
 
 	queryset = Quote.objects.all()
 	serializer_class = QuoteSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,]
+
+	def perform_create(self, serializer):
+		serializer.save(owner = self.request.user)
 
 class QuoteDetail(generics.RetrieveUpdateDestroyAPIView):
 
 	queryset = Quote.objects.all()
 	serializer_class = QuoteSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,]
 
+
+class UserList(generics.ListAPIView):
+
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
 
 #============================================ CLASS BASED VIEWS ================================
 

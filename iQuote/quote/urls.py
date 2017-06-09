@@ -12,6 +12,19 @@ urlpatterns = [
 	url(r'^quotes/$', views.QuoteList.as_view(), name='quote-list'),
 	url(r'quotes/(?P<pk>[0-9]+)/$', views.QuoteDetail.as_view(), name='quote-detail'),
 
+	#============== ROUTES FOR USERS ===========================
+
+	url(r'^users/$', views.UserList.as_view(), name='user-list'),
+	url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name='user-detail'),
+
 ]
+
+urlpatterns += [
+
+	#=============== API AUTHENTICATION ========================
+	
+	url(r'^api-auth/', include('rest_framework.urls')),
+]
+
 
 urlpatterns += format_suffix_patterns(urlpatterns)

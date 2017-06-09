@@ -20,7 +20,18 @@ from quote.models import Quote
 
 
 class QuoteSerializer(serializers.ModelSerializer):
+	owner = serializers.ReadOnlyField(source='owner.username')
 
 	class Meta:
 		model = Quote
-		fields = ('id', 'quote', 'category')
+		fields = ('id', 'owner', 'quote', 'category')
+
+class UserSerializer(serializers.ModelSerializer):
+	quotes = serializers.PrimaryKeyRelatedField(many=True, queryset=Quote.objects.all())
+
+	class Meta:
+		model = User
+		fields = ('id', 'username', 'quotes')
+
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
