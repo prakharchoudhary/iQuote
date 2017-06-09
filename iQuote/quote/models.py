@@ -12,4 +12,7 @@ class Quote(models.Model):
 	created = models.DateTimeField(auto_now_add = True)
 	quote = models.CharField(max_length=140)
 	category = models.CharField(choices=CATEGORY_CHOICES, default='Happy', max_length=100)
+	# owner = models.ForeignKey('auth.User', related_name='quotes')
 
+	class Meta:
+		ordering = ('created',)
