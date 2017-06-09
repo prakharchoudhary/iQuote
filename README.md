@@ -1,2 +1,2 @@
 # iQuote
-The less you speak, the wiser your words become! 
+A platform where people share quotes(famous ones or self-composed). 
