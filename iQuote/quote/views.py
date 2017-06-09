@@ -22,6 +22,9 @@ from rest_framework.reverse import reverse
 
 @api_view(['GET'])
 def api_root(request, format=None):
+	'''
+	view to render the root of our API
+	'''
 	return Response({
 		'quotes': reverse('quote-list', request=request, format=format),
 		'users': reverse('user-list', request=request, format=format),
@@ -31,7 +34,9 @@ def api_root(request, format=None):
 #=============================== GENERIC CLASS-BASED VIEWS =============================================
 
 class QuoteList(generics.ListCreateAPIView):
-
+	'''
+	List all the quotes or create a new one!
+	'''
 	queryset = Quote.objects.all()
 	serializer_class = QuoteSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,]
@@ -40,20 +45,26 @@ class QuoteList(generics.ListCreateAPIView):
 		serializer.save(owner = self.request.user)
 
 class QuoteDetail(generics.RetrieveUpdateDestroyAPIView):
-
+	'''
+	Retrieve, update or delete quotes for a single user.
+	'''
 	queryset = Quote.objects.all()
 	serializer_class = QuoteSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,]
 
 
 class UserList(generics.ListAPIView):
-
+	'''
+	list all the users.
+	'''
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
 
 class UserDetail(generics.RetrieveAPIView):
-
+	'''
+	retrieve details of a single user.
+	'''
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
