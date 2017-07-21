@@ -10,7 +10,7 @@ urlpatterns = [
 	#============== ROUTES FOR QUOTES ==========================
 
 	url(r'^quotes/$', views.QuoteList.as_view(), name='quote-list'),
-	url(r'quotes/(?P<pk>[0-9]+)/$', views.QuoteDetail.as_view(), name='quote-detail'),
+	url(r'^quotes/(?P<pk>[0-9]+)/$', views.QuoteDetail.as_view(), name='quote-detail'),
 
 	#============== ROUTES FOR USERS ===========================
 
